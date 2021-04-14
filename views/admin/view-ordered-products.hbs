@@ -1,0 +1,43 @@
+<section>
+    <div class="container mt-5" style="background: rgb(199, 198, 197);">
+        <div class="row">
+        </div>
+        <div class="mt-3">
+            <table class="table " id="productstable">
+                <thead>
+                    <tr>
+                        <th scope="col">Image</th>
+                        <th scope="col">Product Name</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">Quantity</th>
+                       
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each products}}
+                    <tr>
+                       <td><img style="width: 50px;height:50px" src="/productimages/{{this.product._id}}.jpg" alt=""></td>
+                        <td>{{this.product.name}}</td>
+                        <td>{{this.product.category}}</td>
+                        <td>{{this.product.price}}</td>
+                         <td>{{this.quantity}}</td>
+                        
+                    </tr>
+
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+         <div class="float-right pr-5" style="width: 25%;">
+           
+            <a href="/admin/verify-order/{{orderid}}" class="btn btn-success mt-4" style="width: 100%;"> Verify Order</a>
+        </div>
+
+    </div>
+</section>
+<script>
+    $(function () {
+        $('#productstable').DataTable();
+    });
+</script>

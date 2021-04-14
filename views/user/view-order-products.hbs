@@ -1,0 +1,39 @@
+<section>
+    <div class="container">
+ <div class="mt-5">
+            <table class="table mt-5" id="ordertable">
+                <thead>
+                    <tr>
+                        <th scope="col">image</th>
+                        <th scope="col">Name</th>
+                        <th scope="col">Category</th>
+                        <th scope="col">Price</th>
+                         <th scope="col">Quantity</th>
+                        <th scope="col">Description</th>
+                       
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each products}}
+                    <tr>
+                        <td><img style="width: 60px;height:60px" src="/productimages/{{this.product._id}}.jpg" alt=""></td>
+                        <td>{{this.product.name}}</td>
+                        <td>{{this.product.category}}</td>
+                        <td>{{this.product.price}}</td>
+                        <td>{{this.quantity}}</td>
+                        <td>{{this.product.description}}</td>                   
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+      </div>
+    </div>
+    <div class="float-right pr-5" style="width: 25%;">
+           
+            <a href="/cancelorder/{{orderid}}" class="btn btn-success mt-4" style="width: 100%;"> Cancel Order</a>
+</section>
+<script>
+    $(function () {
+        $('#ordertable').DataTable();
+    });
+</script>

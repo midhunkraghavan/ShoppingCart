@@ -1,0 +1,70 @@
+<section>
+<div class="container">
+    <div class="mt-5">
+    <table class="table mt-5" id="productstable">
+        <thead>
+            <tr>
+                <th scope="col">item</th>
+                <th scope="col">Name</th>
+                <th scope="col">Price</th>
+                <th scope="col">Quantiity</th>
+                <th>Options</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each products}}
+            <tr>
+                <td><img src="/productimages/{{this.productid}}.jpg" style="width: 60px;height:60px;" alt=""></td>
+                <td>{{this.product.name}}</td>
+                <td>{{this.product.price}}</td>
+                <td><button class="cart-item-count mr-3" onclick="changeproductquantity('{{this._id}}','{{this.productid}}','{{../user._id}}',-1)">-</button>
+                <span id="{{this.productid}}">{{this.quantity}} </span>
+                <button class="cart-item-count ml-3" onclick="changeproductquantity('{{this._id}}','{{this.productid}}','{{../user._id}}',1)">+</button></td>
+                <td><a href="/removeproduct/?cartid={{this._id}}&productid={{this.productid}}" class="btn btn-danger">Remove</a></td>
+           </tr>
+           {{/each}}
+        </tbody>
+    </table>
+    <hr>
+     <div class="float-right pr-5">
+            <h3 class="float-left mr-5">
+                Total:Rs.<span id="total">{{total}}</span>
+            </h3><br>
+            <a href="/placeorder" class="btn btn-success mt-3" style="width: 100%;"> Place Order</a>
+        </div>
+</div>
+</div>
+</section>
+<script>
+    $(function () {
+        $('#productstable').DataTable();
+    });
+</script>
+<script>
+    function changeproductquantity(cartid,productid,userid,count){
+        let quantity=document.getElementById(productid).innerHTML
+        quantity=parseInt(quantity)
+        count=parseInt(count)
+        $.ajax({
+            url:'/changeproductquantity',
+            data:{
+                cartid:cartid,
+                productid:productid,
+                userid:userid,
+                count:count,
+                quantity:quantity
+            },
+            method:'post',
+            success:(response)=>{
+                if(response.removeproduct){
+                    alert("item is removed from cart")
+                    location.reload()
+                }
+                else{
+                    document.getElementById(productid).innerHTML=quantity+count
+                    document.getElementById('total').innerHTML=response.total
+                }
+            }
+        })
+    }
+</script>

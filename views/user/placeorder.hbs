@@ -1,0 +1,135 @@
+<section>
+    <div class="container mt-5">
+        <form action=""  id="checkoutform">
+            <div class="row">
+                <div class="col-md-6">
+                    <h2>
+                        Enter Delevery Details
+                    </h2>
+                    <div>
+                           <label for="">Name</label>
+                        <input type="text" class="form-control" id="address" name="name">
+
+                        <label for="">Address</label>
+                        <input type="text" class="form-control" id="address" name="address">
+                        
+                         <label for="">Place</label>
+                        <input type="text" class="form-control" id="place" name="place">
+
+                        <label for="">Pincode</label>
+                        <input type="text" class="form-control" id="pincode" name="pincode">
+
+                        <label for="">Mobile</label>
+                        <input type="text" class="form-control" id="mobile" name="mobile">
+
+                        <input type="text" name="userid" value="{{user._id}}" hidden>
+
+
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="container mt-5 ml-5 checkout">
+                        <h5>
+                            Total Amount :RS.{{total}}
+                        </h5>
+                        <hr>
+                        <div class="payment">
+                            <p>Payment Methode</p>
+                            <label for="" class="radio-inline">
+                                <input type="radio" name="payment-methode" value="COD" checked>COD
+                            </label>
+                            <label for="" class="radio-inline  mt-2">
+                                <input type="radio" name="payment-methode" value="ONLINE">ONLINE-PAYMENT
+                            </label>
+                            <button type="submit" class="btn btn-primary float-right">Checkout</button>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </form>
+    </div>
+</section>
+<script>
+  $("#checkoutform").submit((e)=>{
+        e.preventDefault()
+        $.ajax({
+            url:'/placeorder',
+            method:'post',
+            data:$('#checkoutform').serialize(),
+            success:(response)=>{
+            
+               if(response.codsuccess){
+                 location.href='/ordersuccess'
+               }else{
+                   razorpaypayment(response)
+               }
+            }
+        })
+    })
+    function razorpaypayment(order){
+        var options = {
+    "key": 'rzp_test_Gs7Aesm0E8CQcW', // Enter the Key ID generated from the Dashboard
+    "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+    "currency": "INR",
+    "name": "Shopping Cart",
+    "description": "Test Transaction",
+    "image": "https://example.com/your_logo",
+    "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+    "handler": function (response){
+        verifypayment(response,order)
+    },
+    "prefill": {
+        "name": "",
+        "email": "",
+        "contact": ""
+    },
+    "notes": {
+        "address": "Razorpay Corporate Office"
+    },
+    "theme": {
+        "color": "#3399cc"
+    }
+};
+ var rzp1 = new Razorpay(options);
+rzp1.open();
+}
+function verifypayment(payment,order)
+{
+    $.ajax({
+        url:"/verifypayment",
+        data:{
+            payment:payment,
+            order:order
+        },
+        method:'post',
+        success:(response)=>{
+            if(response.status){
+                location.href = '/ordersuccess'
+            }else{
+                alert(response.errmsg)
+            }
+
+        }
+    })
+}
+</script>
+<style>
+    input[type=radio]{
+        width:20px;
+        height: :30px;
+    }
+    label.radio-inline{
+        display: flex;
+        align-items: center;
+    }
+    .checkout{
+        border:1px solid;
+        border-radius: 3px;
+        padding: 40px;
+    }
+    .payment{
+        padding-bottom: :16px;
+    }
+</style>
